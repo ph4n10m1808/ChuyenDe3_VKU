@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  # container PHP
+  my-php:
+    container_name: php-product
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    hostname: php
+    volumes:
+      - e:/web/:/home/web/
+   # Container Apache2 httpd 
+  my-httpd:
+    container_name: c-httpd
+    image: httpd:latest
+    hostname: httpd
+    volumes:
+      - e:/web/:/home/web/
+      - e:/web/httpd.conf:/usr/local/apache2/conf/httpd.conf
+    ports:
+      - 8080:80
+      - 443:443
+
+  # Container phpmyadmin
+  my-sql:
+    container_name: mysql-product
+    image: mysql:latest
+    hostname: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=nhat150403
+      - MYSQL_DATABASE=laptop
+      - MYSQL_USER=cd2
+      - MYSQL_PASSWORD=nhat
+    
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
+    environment:
+      - PMA_HOST = my-sql
+      - PMA_PORT = 3306
+    ports:
+      - 8081:80
+    depends_on:
+      - my-sql
