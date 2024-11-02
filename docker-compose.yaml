@@ -26,9 +26,11 @@ services:
     container_name: mysql-product
     image: mysql:latest
     hostname: mysql
+    volumes:
+      - e:/web/sql:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_ROOT_PASSWORD=nhat150403
-      - MYSQL_DATABASE=laptop
+      - MYSQL_DATABASE=idor
       - MYSQL_USER=cd2
       - MYSQL_PASSWORD=nhat
     
@@ -36,9 +38,8 @@ services:
     container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin:latest
     environment:
-      - PMA_HOST = my-sql
-      - PMA_PORT = 3306
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
     ports:
       - 8081:80
-    depends_on:
-      - my-sql
+    
