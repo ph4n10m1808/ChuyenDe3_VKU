@@ -60,4 +60,4 @@ COPY ./src/ .
 
 COPY php.ini /usr/local/etc/php/conf.d/
 RUN chown -R www-data:www-data /var/www/html/
-RUN chmod -R 755 /var/www/html/uploads/
+RUN chmod -R 777 /var/www/html/uploads/
