@@ -18,24 +18,34 @@ if (isset($_POST['submit'])) {
 
     // Đường dẫn upload
     $uploadDir = "../uploads/";
-    $uploadFile = $uploadDir . basename($image['name']);
-    $picturename = basename($image['name']);
+    $picturename = $image['name'] . time() . '.' . pathinfo($image['name'], PATHINFO_EXTENSION);
+    $uploadFile = $uploadDir . $picturename;
 
-    // Di chuyển tệp đã tải lên
-    if (move_uploaded_file($image['tmp_name'], $uploadFile)) {
-        // Chuẩn bị câu lệnh SQL để chèn dữ liệu
-        $sql = "INSERT INTO users (username, password, full_name, dob, address, phone, avatar) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sssssss", $username, $password, $full_name, $birthdate, $address, $phone, $picturename);
-        if ($stmt->execute()) {
-            $success = "Registration successful! You can now login.";
-        } else {
-            $error = "Error: " . $stmt->error;
-        }
+    $sql = "SELECT * FROM users WHERE username = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        $stmt->close();
+    if ($result->num_rows > 0) {
+        $error = "Username has been register";
     } else {
-        $error = "Error uploading file.";
+        // Di chuyển tệp đã tải lên
+        if (move_uploaded_file($image['tmp_name'], $uploadFile)) {
+            // Chuẩn bị câu lệnh SQL để chèn dữ liệu
+            $sql = "INSERT INTO users (username, password, full_name, dob, address, phone, avatar) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("sssssss", $username, $password, $full_name, $birthdate, $address, $phone, $picturename);
+            if ($stmt->execute()) {
+                $success = "Registration successful! You can now login.";
+            } else {
+                $error = "Error: " . $stmt->error;
+            }
+
+            $stmt->close();
+        } else {
+            $error = "Error uploading file.";
+        }
     }
 }
 ?>

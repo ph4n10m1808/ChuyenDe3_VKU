@@ -1,9 +1,9 @@
 <?php
 session_start();
-include '../db/db.php';
+include './db/db.php';
 
 // Kiểm tra xem người dùng đã đăng nhập chưa
-if (!isset($_SESSION['login'])) {
+if (!isset($_SESSION['login']) ) {
     header("Location: auth/login.php");
     exit();
 }
@@ -32,7 +32,7 @@ if (isset($_POST['update'])) {
     $phone = $_POST['phone'];
 
     // Cập nhật thông tin người dùng
-    $updateSql = "UPDATE users SET name = ?, date_of_birth = ?, address = ?, phone = ? WHERE id = ?";
+    $updateSql = "UPDATE users SET full_name = ?, dob = ?, address = ?, phone = ? WHERE id = ?";
     $updateStmt = $conn->prepare($updateSql);
     $updateStmt->bind_param('ssssi', $name, $date_of_birth, $address, $phone, $userId);
 
@@ -52,6 +52,7 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -59,6 +60,7 @@ $conn->close();
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Edit User</title>
 </head>
+
 <body class="bg-gray-100">
     <div class="flex items-center justify-center min-h-screen">
         <div class="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
@@ -69,11 +71,11 @@ $conn->close();
             <form method="POST">
                 <div class="mb-4">
                     <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                    <input type="text" name="name" id="name" value="<?php echo $user['name']; ?>" required class="mt-1 p-2 border border-gray-300 rounded-md w-full" />
+                    <input type="text" name="name" id="name" value="<?php echo $user['full_name']; ?>" required class="mt-1 p-2 border border-gray-300 rounded-md w-full" />
                 </div>
                 <div class="mb-4">
                     <label for="date_of_birth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
-                    <input type="date" name="date_of_birth" id="date_of_birth" value="<?php echo date('Y-m-d', strtotime($user['date_of_birth'])); ?>" required class="mt-1 p-2 border border-gray-300 rounded-md w-full" />
+                    <input type="date" name="date_of_birth" id="date_of_birth" value="<?php echo date('Y-m-d', strtotime($user['dob'])); ?>" required class="mt-1 p-2 border border-gray-300 rounded-md w-full" />
                 </div>
                 <div class="mb-4">
                     <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
@@ -91,4 +93,5 @@ $conn->close();
         </div>
     </div>
 </body>
+
 </html>

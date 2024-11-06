@@ -6,16 +6,19 @@ include __DIR__ . '/db/db.php';
 if (!isset($_SESSION['login'])) {
     header("Location: ./auth/login.php");
     exit();
-} else {
-    // Kiểm tra xem người dùng có quyền truy cập trang này không
-    if ($_SESSION['id'] != $_GET['id']) {
-        echo "<h4>Ban dung that la dinh cua chop :v </h4>";
-        echo "<span>FLAG : VKU{H4ck3r_L0rd_Nh3}</span>";
+}
+// Check id in URL
+if (isset($_GET['id'])) {
+    if ($_GET['id'] !== '') {
+        $id = intval($_GET['id']);
+    } else {
+        session_destroy();
+        header("Location: ./auth/login.php");
         exit();
     }
+} else {
+    $id = intval($_SESSION['id']);
 }
-// Lấy ID từ URL
-$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 // Lấy thông tin người dùng từ cơ sở dữ liệu
 $sql = "SELECT * FROM users WHERE id = ?";
@@ -31,17 +34,14 @@ if ($result->num_rows > 0) {
     $today = new DateTime('today');
     $age = $today->diff($dob)->y;
 }
-// } else {
-//     echo "<h4>Ban dung that la dinh cua chop :v </h4>";
-//     echo "<span>FLAG : VKU{H4ck3r_L0rd_Nh3}</span>";
-//     exit();
-// }
-
+else {
+    session_destroy();
+    header("Location: ./auth/login.php");
+    exit();
+}
 $stmt->close();
 $conn->close();
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -71,8 +71,9 @@ $conn->close();
                 <p class="text-gray-700"><strong>Address:</strong> <?php echo $user['address']; ?></p>
                 <p class="text-gray-700"><strong>Phone:</strong> <?php echo $user['phone']; ?></p>
             </div>
-            <div class="mt-8">
+            <div class="mt-8 flex justify-between">
                 <a href="logout.php" class="text-blue-500 hover:underline">Logout</a>
+                <a href="edit.php?id=<?php echo $id ?>" class="text-blue-500 hover:underline">Edit Profile</a>
             </div>
         </div>
     </div>
