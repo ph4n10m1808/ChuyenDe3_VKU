@@ -1,8 +1,4 @@
-<?php 
-    // $servername = "my-sql";
-    // $username = 'cd2';
-    // $password = 'nhat';
-    // $db = 'idor';
+<?php
     $servername = getenv('MYSQL_HOST');
     $username = getenv('MYSQL_USER');
     $password = getenv('MYSQL_PASSWORD');

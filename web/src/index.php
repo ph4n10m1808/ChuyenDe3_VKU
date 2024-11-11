@@ -34,11 +34,6 @@ if ($result->num_rows > 0) {
     $today = new DateTime('today');
     $age = $today->diff($dob)->y;
 }
-else {
-    session_destroy();
-    header("Location: ./auth/login.php");
-    exit();
-}
 $stmt->close();
 $conn->close();
 ?>
